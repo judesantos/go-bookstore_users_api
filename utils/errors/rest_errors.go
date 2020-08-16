@@ -4,33 +4,33 @@ import "net/http"
 
 type RestError struct {
 	Message string
-	Status int
+	Status  int
 }
 
 func NotFoundError(message string) *RestError {
 	return &RestError{
 		Message: message,
-		Status: http.StatusNotFound,
+		Status:  http.StatusNotFound,
 	}
 }
 
 func BadRequestError(message string) *RestError {
 	return &RestError{
 		Message: message,
-		Status: http.StatusBadRequest,
+		Status:  http.StatusBadRequest,
 	}
 }
 
 func InternalServerError(message string) *RestError {
 	return &RestError{
 		Message: message,
-		Status: http.StatusInternalServerError,
+		Status:  http.StatusInternalServerError,
 	}
 }
 
 func InvalidParameterError(message string) *RestError {
 	return &RestError{
 		Message: message,
-		Status: http.StatusPreconditionFailed,
+		Status:  http.StatusPreconditionFailed,
 	}
 }
