@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/judesantos/go-bookstore_oauth/oauth"
 	"github.com/judesantos/go-bookstore_users_api/services"
 	"github.com/judesantos/go-bookstore_users_api/utils/errors"
 
@@ -23,6 +24,9 @@ func getUserId(userId string) (int64, *errors.RestError) {
 	return id, nil
 }
 
+//
+// CreateUser
+//
 func CreateUser(c *gin.Context) {
 
 	var user users.User
@@ -44,7 +48,15 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, result.Marshall(c.GetHeader("X-Public") == "true"))
 }
 
+//
+// GetUser
+//
 func GetUser(c *gin.Context) {
+
+	if err := oauth.AuthenticateRequest(c.Request); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
 
 	userId, err := getUserId(c.Param("user_id"))
 	if err != nil {
@@ -58,9 +70,16 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user.Marshall(c.GetHeader("X-Public") == "true"))
+	if oauth.GetUserId(c.Request) == user.Id {
+		c.JSON(http.StatusOK, user.Marshall(false))
+	}
+
+	c.JSON(http.StatusOK, user.Marshall(oauth.IsPublic(c.Request)))
 }
 
+//
+// UpdateUser
+//
 func UpdateUser(c *gin.Context) {
 
 	userId, err := getUserId(c.Param("user_id"))
@@ -90,6 +109,9 @@ func UpdateUser(c *gin.Context) {
 
 }
 
+//
+// DeleteUser
+//
 func DeleteUser(c *gin.Context) {
 
 	userId, err := getUserId(c.Param("user_id"))
@@ -107,6 +129,9 @@ func DeleteUser(c *gin.Context) {
 
 }
 
+//
+// Search
+//
 func Search(c *gin.Context) {
 
 	status := c.Query("status")
@@ -120,6 +145,9 @@ func Search(c *gin.Context) {
 	c.JSON(http.StatusOK, users.Marshall(c.GetHeader("X-Public") == "true"))
 }
 
+//
+// Login
+//
 func Login(c *gin.Context) {
 
 	var req = users.LoginRequest{}

@@ -26,6 +26,7 @@ func (users Users) Marshall(public bool) []interface{} {
 }
 
 func (user *User) Marshall(public bool) interface{} {
+
 	if public {
 		return PublicUser{
 			Id:          user.Id,
@@ -33,6 +34,17 @@ func (user *User) Marshall(public bool) interface{} {
 			Status:      user.Status,
 		}
 	}
+
+	/*
+		return PrivateUser{
+			Id:          user.Id,
+			FirstName:   user.FirstName,
+			LastName:    user.LastName,
+			Email:       user.Email,
+			Status:      user.Status,
+			DateCreated: user.DateCreated,
+		}
+	*/
 
 	userJson, _ := json.Marshal(user)
 	var privateUser PrivateUser
