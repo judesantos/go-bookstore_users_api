@@ -18,7 +18,3 @@ require (
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
-
-replace github.com/judesantos/go-bookstore_utils => /home/judesantos/dev/go/projects/bookstore/go-bookstore_utils
-
-replace github.com/judesantos/go-bookstore_oauth => /home/judesantos/dev/go/projects/bookstore/go-bookstore_oauth
