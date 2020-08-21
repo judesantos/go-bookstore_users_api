@@ -10,15 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/judesantos/go-bookstore_oauth/oauth"
 	"github.com/judesantos/go-bookstore_users_api/services"
-	"github.com/judesantos/go-bookstore_users_api/utils/errors"
+	"github.com/judesantos/go-bookstore_utils/rest_errors"
 
 	"github.com/judesantos/go-bookstore_users_api/domain/users"
 )
 
-func getUserId(userId string) (int64, *errors.RestError) {
+func getUserId(userId string) (int64, rest_errors.IRestError) {
 	id, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		return 0, errors.BadRequestError("Invalid user id")
+		return 0, rest_errors.BadRequestError("Invalid user id")
 	}
 
 	return id, nil
@@ -32,8 +32,8 @@ func CreateUser(c *gin.Context) {
 	var user users.User
 	fmt.Println(c.Request.Body)
 	if err := c.ShouldBindJSON(&user); err != nil {
-		err := errors.BadRequestError("Invalid json body")
-		c.JSON(err.Status, err)
+		err := rest_errors.BadRequestError("Invalid json body")
+		c.JSON(err.Status(), err)
 		return
 	}
 
@@ -41,7 +41,7 @@ func CreateUser(c *gin.Context) {
 
 	result, err := services.UsersService.CreateUser(user)
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 
@@ -54,19 +54,19 @@ func CreateUser(c *gin.Context) {
 func GetUser(c *gin.Context) {
 
 	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 
 	userId, err := getUserId(c.Param("user_id"))
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 
 	user, getErr := services.UsersService.GetUser(userId)
 	if getErr != nil {
-		c.JSON(getErr.Status, getErr)
+		c.JSON(getErr.Status(), getErr)
 		return
 	}
 
@@ -84,15 +84,15 @@ func UpdateUser(c *gin.Context) {
 
 	userId, err := getUserId(c.Param("user_id"))
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 
 	var user users.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		err := errors.BadRequestError("Invalid json body")
-		c.JSON(err.Status, err)
+		err := rest_errors.BadRequestError("Invalid json body")
+		c.JSON(err.Status(), err)
 		return
 	}
 
@@ -101,7 +101,7 @@ func UpdateUser(c *gin.Context) {
 
 	result, svcErr := services.UsersService.UpdateUser(isPartial, user)
 	if svcErr != nil {
-		c.JSON(svcErr.Status, err)
+		c.JSON(svcErr.Status(), err)
 		return
 	}
 
@@ -116,12 +116,12 @@ func DeleteUser(c *gin.Context) {
 
 	userId, err := getUserId(c.Param("user_id"))
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 
 	if err := services.UsersService.DeleteUser(userId); err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 
@@ -138,7 +138,7 @@ func Search(c *gin.Context) {
 
 	users, err := services.UsersService.SearchUser(status)
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 
@@ -153,14 +153,14 @@ func Login(c *gin.Context) {
 	var req = users.LoginRequest{}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		restErr := errors.InvalidParameterError("invalid username or password")
-		c.JSON(restErr.Status, restErr)
+		restErr := rest_errors.InvalidParameterError("invalid username or password")
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
 	user, err := services.UsersService.LoginUser(req)
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 

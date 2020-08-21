@@ -4,7 +4,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/judesantos/go-bookstore_users_api/logger"
+	"github.com/judesantos/go-bookstore_utils/logger"
 )
 
 var (

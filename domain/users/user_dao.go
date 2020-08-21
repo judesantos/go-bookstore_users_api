@@ -7,8 +7,8 @@ import (
 
 	"github.com/judesantos/go-bookstore_users_api/datasources/mysql/users_db"
 	crypto_utils "github.com/judesantos/go-bookstore_users_api/utils/crypto"
-	"github.com/judesantos/go-bookstore_users_api/utils/errors"
 	mysql_utils "github.com/judesantos/go-bookstore_users_api/utils/mysql"
+	"github.com/judesantos/go-bookstore_utils/rest_errors"
 )
 
 const (
@@ -35,7 +35,7 @@ var (
 //
 //	Get - Get user by id
 //
-func (user *User) Get() *errors.RestError {
+func (user *User) Get() rest_errors.IRestError {
 
 	stmt, err := users_db.Client.Prepare(queryGetUser)
 	if err != nil {
@@ -57,7 +57,7 @@ func (user *User) Get() *errors.RestError {
 //
 // Save - Save new user
 //
-func (user *User) Save() *errors.RestError {
+func (user *User) Save() rest_errors.IRestError {
 
 	stmt, err := users_db.Client.Prepare(queryInsertUser)
 	if err != nil {
@@ -87,7 +87,7 @@ func (user *User) Save() *errors.RestError {
 //
 // Update - Update user
 //
-func (user *User) Update() *errors.RestError {
+func (user *User) Update() rest_errors.IRestError {
 
 	stmt, err := users_db.Client.Prepare(queryUpdateUser)
 	if err != nil {
@@ -108,7 +108,7 @@ func (user *User) Update() *errors.RestError {
 //
 // Delete - Delete user
 //
-func (user *User) Delete() *errors.RestError {
+func (user *User) Delete() rest_errors.IRestError {
 
 	stmt, err := users_db.Client.Prepare(queryDeleteUser)
 	if err != nil {
@@ -128,7 +128,7 @@ func (user *User) Delete() *errors.RestError {
 //
 // FindByStatus - Find users by status
 //
-func (user *User) FindByStatus(status string) (Users, *errors.RestError) {
+func (user *User) FindByStatus(status string) (Users, rest_errors.IRestError) {
 
 	stmt, err := users_db.Client.Prepare(queryFindUserByStatus)
 	if err != nil {
@@ -162,7 +162,7 @@ func (user *User) FindByStatus(status string) (Users, *errors.RestError) {
 	}
 
 	if len(results) == 0 {
-		return nil, errors.NotFoundError(
+		return nil, rest_errors.NotFoundError(
 			fmt.Sprintf("no users found with matching status %s", status))
 	}
 
@@ -172,7 +172,7 @@ func (user *User) FindByStatus(status string) (Users, *errors.RestError) {
 //
 // FindByEmailAndPassword - Find user by email and password
 //
-func (user *User) FindByEmailAndPassword() *errors.RestError {
+func (user *User) FindByEmailAndPassword() rest_errors.IRestError {
 
 	stmt, err := users_db.Client.Prepare(queryLoginInfo)
 	if err != nil {

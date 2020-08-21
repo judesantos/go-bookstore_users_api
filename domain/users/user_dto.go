@@ -5,7 +5,7 @@ package users
 import (
 	"strings"
 
-	"github.com/judesantos/go-bookstore_users_api/utils/errors"
+	"github.com/judesantos/go-bookstore_utils/rest_errors"
 )
 
 type User struct {
@@ -25,14 +25,14 @@ type LoginRequest struct {
 
 type Users []User
 
-func (user *User) Validate() *errors.RestError {
+func (user *User) Validate() rest_errors.IRestError {
 
 	user.FirstName = strings.TrimSpace(strings.ToLower(user.FirstName))
 	user.LastName = strings.TrimSpace(strings.ToLower(user.LastName))
 
 	user.Email = strings.TrimSpace(strings.ToLower(user.Email))
 	if user.Email == "" {
-		return errors.InvalidParameterError("Invalid email address")
+		return rest_errors.InvalidParameterError("Invalid email address")
 	}
 
 	return nil
